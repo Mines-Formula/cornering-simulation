@@ -4,16 +4,23 @@ dataFolder = '/Users/Blanchards1/Documents/FormulaSim/documentation/data/runData
 inFile  = fullfile(dataFolder, "R20.csv");
 %outFile = fullfile(dataFolder, "R20_ordered_tire_pressure.csv");
 
+%{
 newTable = readtable(inFile);
 tirePressureTable = tirePressureSort(newTable);
 speedTable = speedSort(newTable);
 inclinationTable = inclinationAngleSort(newTable);
 verticalLoadTable = verticalLoadSort(newTable);
-
-pressureSpeedTable = secondarySort(newTable, {'TirePressure', 'RoadSpeed'}, "RP_ordered_tp_speed.csv");
-
+%}
 
 
+
+function [newTable] = genericSort(startTable, sortVars, outFile)
+    newTable = sortrows(startTable, sortVars);
+    writetable(newTable, outFile);
+    disp("Finished secondary sort.")
+end
+
+%{
 function [newTable] = tirePressureSort(newTable) 
     newTable.TirePressure_round = round(newTable.TirePressure);
     newTable = sortrows(newTable, {'TirePressure_round', 'TirePressure'});
@@ -47,3 +54,4 @@ function [newTable] = secondarySort(startTable, sortVars, outFile)
     writetable(newTable, outFile);
     disp("Finished secondary sort.")
 end
+%}
