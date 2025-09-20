@@ -10,6 +10,8 @@ speedTable = speedSort(newTable);
 inclinationTable = inclinationAngleSort(newTable);
 verticalLoadTable = verticalLoadSort(newTable);
 
+
+
 function [newTable] = tirePressureSort(newTable) 
     newTable.TirePressure_round = round(newTable.TirePressure);
     newTable = sortrows(newTable, {'TirePressure_round', 'TirePressure'});
@@ -36,4 +38,8 @@ function [newTable] = verticalLoadSort(newTable)
     writetable(newTable, "R20_ordered_vertical_load.csv");
     disp("Finished vertical load sort.");
     
+end
+
+function [finalTable] = secondarySort(startTable)
+
 end
