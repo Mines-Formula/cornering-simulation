@@ -14,26 +14,26 @@ function [newTable] = tirePressureSort(newTable)
     newTable.TirePressure_round = round(newTable.TirePressure);
     newTable = sortrows(newTable, {'TirePressure_round', 'TirePressure'});
     writetable(newTable, "R20_ordered_tire_pressure.csv");
-    disp("Finished with tire pressure sort.")
+    disp("Finished tire pressure sort.")
 end
 
 function [newTable] = speedSort(newTable)
     newTable = sortrows(newTable, 'RoadSpeed');
-    writetable(newTable, "R20_ordered_speed");
-    disp("Finished with speed sort.");
+    writetable(newTable, "R20_ordered_speed.csv");
+    disp("Finished speed sort.");
 
 end
 
 function [newTable] = inclinationAngleSort(newTable)
     newTable = sortrows(newTable, 'InclinationAngle');
-    writetable(newTable, "R20_ordered_inclination_angle");
+    writetable(newTable, "R20_ordered_inclination_angle.csv");
     disp("Finished inclination angle sort.");
 
 end
 
 function [newTable] = verticalLoadSort(newTable)
     newTable = sortrows(newTable, 'NormalForce');
-    writetable(newTable, "R20_ordered_vertical_load");
+    writetable(newTable, "R20_ordered_vertical_load.csv");
     disp("Finished vertical load sort.");
     
 end
