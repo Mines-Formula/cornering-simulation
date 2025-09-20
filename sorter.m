@@ -5,10 +5,10 @@ inFile  = fullfile(dataFolder, "R20.csv");
 %outFile = fullfile(dataFolder, "R20_ordered_tire_pressure.csv");
 
 newTable = readtable(inFile);
-tirePressureSort(newTable);
-speedSort(newTable);
-inclinationAngleSort(newTable);
-verticalLoadSort(newTable);
+tirePressureTable = tirePressureSort(newTable);
+speedTable = speedSort(newTable);
+inclinationTable = inclinationAngleSort(newTable);
+verticalLoadTable = verticalLoadSort(newTable);
 
 function [newTable] = tirePressureSort(newTable) 
     newTable.TirePressure_round = round(newTable.TirePressure);
