@@ -5,29 +5,35 @@ inFile  = fullfile(dataFolder, "R20.csv");
 %outFile = fullfile(dataFolder, "R20_ordered_tire_pressure.csv");
 
 newTable = readtable(inFile);
-
-
+tirePressureSort(newTable);
+speedSort(newTable);
+inclinationAngleSort(newTable);
+verticalLoadSort(newTable);
 
 function [newTable] = tirePressureSort(newTable) 
     newTable.TirePressure_round = round(newTable.TirePressure);
     newTable = sortrows(newTable, {'TirePressure_round', 'TirePressure'});
+    writetable(newTable, "R20_ordered_tire_pressure.csv");
     disp("Finished with tire pressure sort.")
 end
 
 function [newTable] = speedSort(newTable)
-    newTable.sortrows(newTable, 'RoadSpeed');
-    disp("Finished with speed store.");
+    newTable = sortrows(newTable, 'RoadSpeed');
+    writetable(newTable, "R20_ordered_speed");
+    disp("Finished with speed sort.");
 
 end
 
 function [newTable] = inclinationAngleSort(newTable)
-    newTable.sortrows(newTable, 'InclinationAngle');
+    newTable = sortrows(newTable, 'InclinationAngle');
+    writetable(newTable, "R20_ordered_inclination_angle");
     disp("Finished inclination angle sort.");
 
 end
 
-function [newTable] = verticalLoad(newTable)
-    newTable.sortrows(newTable, 'NormalForce');
-    disp("Finished inclination angle sort.");
+function [newTable] = verticalLoadSort(newTable)
+    newTable = sortrows(newTable, 'NormalForce');
+    writetable(newTable, "R20_ordered_vertical_load");
+    disp("Finished vertical load sort.");
     
 end
