@@ -13,7 +13,7 @@ for i = 1:numel(fileList)
     curFile = load(filePath);
 
     if string(curFile.tireid) ~= targetTire
-        fprintf("Skipping %s (tireid = %s)\n", ...
+        fprintf("⏭ Skipping %s (tireid = %s)\n", ...
             fileList(i).name, curFile.tireid);
         continue
     end
@@ -28,6 +28,6 @@ for i = 1:numel(fileList)
 
 end
 
-outFile = fullfile(dataFolder, "R20.csv");
+outFile = fullfile(dataFolder, "R20_tire_all_runs.csv");
 writetable(finalTable, outFile);
 disp("Finished");
