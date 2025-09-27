@@ -23,4 +23,18 @@ for i = 1:length(uniqueLoads)
     idx = (normalForce == thisLoad);
     sa = slipAngle(idx);
     cf = corneringForce(idx);
+
+    if numel(sa) < order * 3
+        continue;
+    end
+
+    cfFilt = filtfilt(b, a, cf);
+    scatter(sa, cf, 5, colors(i,:), 'filled', 'MarkerFaceAlpha', 0.3);
+    plot(sa, cfFilt, 'LineWidth', 2, 'Color', colors(i,:));
 end
+
+xlabel('Slip Angle [deg]');
+ylabel('Cornering Force [N]');
+title('Cornering Force vs Slip Angle by Load');
+legendStrings = cellstr(num2str(uniqueLoads, '%d N'));
+legend(legendStrings, 'Location', 'best')
