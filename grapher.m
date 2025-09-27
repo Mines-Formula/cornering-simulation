@@ -24,7 +24,7 @@ for i = 1:length(uniqueLoads)
     sa = slipAngle(idx);
     cf = corneringForce(idx);
 
-    if numel(sa) < order * 3
+    if numel(sa) < 10
         continue;
     end
 
