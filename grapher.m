@@ -16,11 +16,3 @@ figure('Color', [1 1 1]);
 scatter(slipAngle, corneringForce, 1, 'b', 'filled');
 hold on;
 grid on;
-
-
-plot(slipAngle, corneringForceFilter, 'r-', 'LineWidth', 2);
-xlabel('Slip Angle [deg]');
-ylabel('Cornering Force [N]');
-title('Cornering Force vs Slip Angle (Filtered)');
-legend('Raw Data','Butterworth Filtered','Location','best');
-grid on
