@@ -1,11 +1,11 @@
 clc, clearvars, clear all
 
-dataFolder = 'C:\Users\ajsau\Documents\formula\corneringSim\cornering-simulation\TTC_Resources\RunData_Cornering_Matlab_USCS_10inch_Round8';
+dataFolder = '/Users/Blanchards1/Documents/FormulaSim/cornering-simulation/R20.csv';
 fileList = dir(fullfile(dataFolder, "*.mat"));
 
 finalTable = table();
 
-targetTire = 'Hoosier 43075 16x7.5-10 LCO, 7 inch rim'
+targetTire = 'Hoosier 43075 16x7.5-10 LCO, 7 inch rim';
 
 for i = 1:numel(fileList)
 
@@ -13,8 +13,7 @@ for i = 1:numel(fileList)
     curFile = load(filePath);
 
     if string(curFile.tireid) ~= targetTire
-        fprintf("Skipping %s (tireid = %s)\n", ...
-            fileList(i).name, curFile.tireid);
+        fprintf("Skipping %s (tireid = %s)\n", fileList(i).name, curFile.tireid);
         continue
     end
 
