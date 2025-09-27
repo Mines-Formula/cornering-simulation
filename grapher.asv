@@ -1,0 +1,7 @@
+clc, clearvars, clear all
+inFile = "R20_sorted.csv";
+
+newTable = readtable(inFile);
+
+
+figure;
