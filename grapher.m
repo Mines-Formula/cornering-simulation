@@ -6,6 +6,9 @@ newTable = readtable(inFile);
 uniqueLoads = unique(newTable.NormalForce);
 slipAngle = newTable.SlipAngle;
 corneringForce = newTable.LateralForce;
+normalForce = newTable.NormalForce;
+
+roundedNormal
 
 order = 1;
 cutoff = 0.05;
@@ -17,6 +20,12 @@ scatter(slipAngle, corneringForce, 1, 'b', 'filled');
 xlabel('Slip Angle [deg]');
 ylabel('Cornering Force [N]');
 hold on;
+grid on;
+
+figure;
+scatter(normalForce, slipAngle, 1, 'b', 'filled');
+xlabel('Normal Force');
+ylabel('Slip Angle');
 grid on;
 
 
