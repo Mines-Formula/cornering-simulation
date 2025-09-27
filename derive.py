@@ -7,7 +7,9 @@ from scipy.signal import butter, filtfilt
 df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_ordered_normal_force.csv")
 
 #step 1 - get nominal force
-fz0 = df["NormalForce"]
+weight = 450 #lbs
+mass = weight / 2.205
+fz0 = mass * 9.81
 
 #step 2 - friction coefficient paremeter
 #dy - cornering force
