@@ -1,0 +1,51 @@
+import pandas as pd
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+from scipy.signal import butter, filtfilt
+
+df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_ordered_normal_force.csv")
+
+#step 1 - get nominal force
+fz0 = df["NormalForce"]
+
+#step 2 - friction coefficient paremeter
+#dy - cornering force
+#pdy1 - friction coefficient
+lateral_force = df["LateralForce"]
+dy = max(abs(lateral_force))
+print(dy)
+pdy1 = dy / fz0
+
+#step 3 - stiffness parameters
+sa = df["SlipAngle"]
+k = 5000 / (sa * (math.pi / 180))
+k_normalized = k/fz0
+min_stiff = k_normalized.min()
+index = k_normalized.tolist().index(min_stiff)
+vertical_load_value = fz0[index]
+pxy2 = vertical_load_value/fz0
+print(vertical_load_value)
+
+#step 4 - shape parameter
+# Using google AI overview code for butterworth filter
+fs = 1000  # Sampling frequency (Hz)
+cutoff_freq = 50 # Cutoff frequency (Hz)
+nyquist_freq = 0.5 * fs
+normalized_cutoff = cutoff_freq / nyquist_freq
+order = 4 # Filter order
+
+b, a = butter(order, normalized_cutoff, btype="low")
+# Assuming 'data_series' is your Pandas Series
+other_df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_ordered_slip_angle_and_lateral_force.csv")
+sa_filtered = filtfilt(b, a, other_df["SlipAngle"].values)
+dy_filtered = filtfilt(b, a, other_df["LateralForce"].values)
+plt.plot(sa_filtered, dy_filtered)
+plt.show()
+
+'''
+print(sa.head())
+print(fz0.head())
+plt.plot(sa, fz0)
+plt.show()
+'''
