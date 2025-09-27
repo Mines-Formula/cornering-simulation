@@ -2,36 +2,27 @@ clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
 newTable = readtable(inFile);
-
-uniqueLoads = unique(newTable.NormalForce);
 slipAngle = newTable.SlipAngle;
 corneringForce = newTable.LateralForce;
 normalForce = newTable.NormalForce;
 
-roundedNormal
+loadBins = round(normalForce / 50) * 50;
+uniqueLoads = unique(loadBins);
 
-order = 1;
-cutoff = 0.05;
-[b, a] = butter(order, cutoff, 'low');
-corneringForceFilter = filtfilt(b, a, corneringForce);
+colors = lines(length(uniqueLoads));
 
-figure('Color', [1 1 1]);
-scatter(slipAngle, corneringForce, 1, 'b', 'filled');
-xlabel('Slip Angle [deg]');
-ylabel('Cornering Force [N]');
+figure('Color', [1,1,1]);
 hold on;
 grid on;
 
-figure;
-scatter(normalForce, slipAngle, 1, 'b', 'filled');
-xlabel('Normal Force');
-ylabel('Slip Angle');
-grid on;
+for i = 1:length(uniqueLoads)
+    thisLoad = uniqueLoads(i);
+    idx = (loadBins == thisLoad);
 
+    scatter(slipAngle(idx), corneringForce(idx), 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.4);
+end
 
-%plot(slipAngle, corneringForceFilter, 'r-', 'LineWidth', 2);
-%xlabel('Slip Angle [deg]');
-%ylabel('Cornering Force [N]');
-%title('Cornering Force vs Slip Angle (Filtered)');
-%legend('Raw Data','Butterworth Filtered','Location','best');
-%grid on
+xlabel('Slip Angle (deg)');
+ylabel('Cornering Force (N)');
+title('Cornering Force vs Slip Angle');
+legend(cellstr(num2str(uniqueLoads, '%d N')), 'Location', 'best');
