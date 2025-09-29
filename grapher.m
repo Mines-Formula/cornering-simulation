@@ -31,7 +31,9 @@ for i = 1:length(uniqueLoads)
 
     cfFilt = filtfilt(b, a, cfSorted);
 
-    scatter(slipAngle(idx), corneringForce(idx), 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.4);
+    scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
+
+    plot(saSorted, cfFilt, 'LineWidth', 2, 'Color', colors(i,:));
 end
 
 xlabel('Slip Angle (deg)');
