@@ -23,7 +23,7 @@ pdy1 = dy / fz0
 '''
 
 #step 3 - stiffness parameters
-
+print("Are changes made?")
 
 '''
 #step 4 - shape parameter
