@@ -9,8 +9,10 @@ df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simula
 #step 1 - get nominal force
 weight = 450 #lbs
 mass = weight / 2.205
+print(mass)
 fz0 = mass * 9.81
 
+''' wait for payton
 #step 2 - friction coefficient paremeter
 #dy - cornering force
 #pdy1 - friction coefficient
@@ -18,17 +20,12 @@ lateral_force = df["LateralForce"]
 dy = max(abs(lateral_force))
 print(dy)
 pdy1 = dy / fz0
+'''
 
 #step 3 - stiffness parameters
-sa = df["SlipAngle"]
-k = 5000 / (sa * (math.pi / 180))
-k_normalized = k/fz0
-min_stiff = k_normalized.min()
-index = k_normalized.tolist().index(min_stiff)
-vertical_load_value = fz0[index]
-pxy2 = vertical_load_value/fz0
-print(vertical_load_value)
 
+
+'''
 #step 4 - shape parameter
 # Using google AI overview code for butterworth filter
 fs = 1000  # Sampling frequency (Hz)
@@ -45,7 +42,7 @@ dy_filtered = filtfilt(b, a, other_df["LateralForce"].values)
 plt.plot(sa_filtered, dy_filtered)
 plt.show()
 
-'''
+
 print(sa.head())
 print(fz0.head())
 plt.plot(sa, fz0)
