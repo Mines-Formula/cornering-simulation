@@ -22,8 +22,23 @@ print(dy)
 pdy1 = dy / fz0
 '''
 
-#step 3 - stiffness parameters
-print("Are changes made?")
+#STEP 3 - stiffness parameters
+#example data:
+x = np.array([100*9.81, 200*9.81, 300*9.81])
+y = np.array([-20.6, -37.4, -49.5])
+
+# Calculate the polynomial trend line (degree 2)
+values = np.polyfit(x, y, 2)
+eqn = np.poly1d(values)
+print(eqn)
+
+#take the derivative
+eqn_deriv = eqn.deriv()
+print(f"Derivative: {eqn_deriv}")
+#find the roots based on the coeff
+#root = max value of stiffness (still of type list)
+root = np.roots(eqn_deriv.coeffs)
+print(root)
 
 '''
 #step 4 - shape parameter
