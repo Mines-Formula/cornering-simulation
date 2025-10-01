@@ -9,15 +9,14 @@ normalForce = newTable.NormalForce;
 loadBins = round(normalForce / 50) * 50;
 uniqueLoads = unique(loadBins);
 
-order = 2;
+order = 4;
 cutoff = 0.05;
 [b, a] = butter(order, cutoff, 'low');
-
-colors = lines(length(uniqueLoads));
 
 figure('Color', [1,1,1]);
 hold on;
 grid on;
+colors = lines(length(uniqueLoads));
 
 for i = 1:length(uniqueLoads)
     thisLoad = uniqueLoads(i);
@@ -30,6 +29,11 @@ for i = 1:length(uniqueLoads)
     cfSorted = cf(sortIdx);
 
     cfFilt = filtfilt(b, a, cfSorted);
+
+    % Added step
+    step = 20;
+    saPlot = saSorted(1:step:end);
+    cfPlot = cfSorted(1:step:end);
 
     scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
 
