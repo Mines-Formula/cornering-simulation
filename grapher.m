@@ -34,7 +34,6 @@ for i = 1:length(uniqueLoads)
     step = 20;
     saPlot = saSorted(1:step:end);
     cfPlot = cfSorted(1:step:end);
-
     scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
 
     plot(saSorted, cfFilt, 'LineWidth', 2, 'Color', colors(i,:));
