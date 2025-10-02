@@ -2,14 +2,14 @@ clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
 newTable = readtable(inFile);
-slipAngle = newTable.SlipAngle;
-corneringForce = newTable.LateralForce;
-normalForce = newTable.NormalForce;
+slipAngleRaw = newTable.SlipAngle;
+corneringForceRaw = newTable.LateralForce;
+normalForceRaw = newTable.NormalForce;
 
-loadBins = round(normalForce / 50) * 50;
+loadBins = round(normalForceRaw / 50) * 50;
 uniqueLoads = unique(loadBins);
 
-order = 4;
+order = 2;
 cutoff = 0.05;
 [b, a] = butter(order, cutoff, 'low');
 
@@ -22,8 +22,8 @@ for i = 1:length(uniqueLoads)
     thisLoad = uniqueLoads(i);
     idx = (loadBins == thisLoad);
 
-    sa = slipAngle(idx);
-    cf = corneringForce(idx);
+    sa = slipAngleRaw(idx);
+    cf = corneringForceRaw(idx);
 
     [saSorted, sortIdx] = sort(sa);
     cfSorted = cf(sortIdx);
