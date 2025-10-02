@@ -53,7 +53,24 @@ for i = 1:length(uniqueLoads)
     end
 
     edges = min(curSlipAngle):angleBinWidth:max(curSlipAngle);
+    centers = edges(1:end - 1) + angleBinWidth / 2;
+    medianCorneringForce = nan(size(centers));
+    counts = zeros(size(centers));
 
+    for j = 1:length(edges) - 1
+        inBin = curSlipAngle >= edges(j) & curSlipAngle < edges(j + 1);
+
+
+
+
+
+
+
+
+
+
+
+        
     [saSorted, sortIdx] = sort(sa);
     cfSorted = cf(sortIdx);
 
