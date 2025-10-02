@@ -6,17 +6,23 @@ slipAngleRaw = newTable.SlipAngle;
 corneringForceRaw = newTable.LateralForce;
 normalForceRaw = newTable.NormalForce;
 
+% bins by normal force to the nearest 50
 loadBins = round(normalForceRaw / 50) * 50;
 uniqueLoads = unique(loadBins);
 
+% Butterworth
 order = 2;
 cutoff = 0.05;
 [b, a] = butter(order, cutoff, 'low');
 
+slipAngelBinWidth = 0.5;
+minPointsperLoad = 30; 
+minSlipAngelPoints = 5;
+
+colors = lines(length(uniqueLoads));
 figure('Color', [1,1,1]);
 hold on;
 grid on;
-colors = lines(length(uniqueLoads));
 
 for i = 1:length(uniqueLoads)
     thisLoad = uniqueLoads(i);

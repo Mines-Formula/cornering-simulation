@@ -2,27 +2,48 @@ clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
 newTable = readtable(inFile);
-slipAngle = newTable.SlipAngle;
-corneringForce = newTable.LateralForce;
-normalForce = newTable.NormalForce;
+slipAngleRaw = newTable.SlipAngle;
+corneringForceRaw = newTable.LateralForce;
+normalForceRaw = newTable.NormalForce;
 
-loadBins = round(normalForce / 50) * 50;
+% bins by normal force to the nearest 50
+loadBins = round(normalForceRaw / 50) * 50;
 uniqueLoads = unique(loadBins);
 
-colors = lines(length(uniqueLoads));
+% Butterworth
+order = 2;
+cutoff = 0.05;
+[b, a] = butter(order, cutoff, 'low');
+
+slipAngelBinWidth = 
 
 figure('Color', [1,1,1]);
 hold on;
 grid on;
+colors = lines(length(uniqueLoads));
 
 for i = 1:length(uniqueLoads)
     thisLoad = uniqueLoads(i);
     idx = (loadBins == thisLoad);
 
-    scatter(slipAngle(idx), corneringForce(idx), 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.4);
+    sa = slipAngleRaw(idx);
+    cf = corneringForceRaw(idx);
+
+    [saSorted, sortIdx] = sort(sa);
+    cfSorted = cf(sortIdx);
+
+    cfFilt = filtfilt(b, a, cfSorted);
+
+    % Added step
+    step = 20;
+    saPlot = saSorted(1:step:end);
+    cfPlot = cfSorted(1:step:end);
+    scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
+
+    plot(saSorted, cfFilt, 'LineWidth', 2, 'Color', colors(i,:));
 end
 
 xlabel('Slip Angle (deg)');
 ylabel('Cornering Force (N)');
 title('Cornering Force vs Slip Angle');
-legend(cellstr(num2str((unique, '%d N')), 'Location', 'best');
+legend(cellstr(num2str(uniqueLoads, '%d N')), 'Location', 'best');
