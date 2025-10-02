@@ -38,6 +38,12 @@ for i = 1:length(uniqueLoads)
     curSlipAngle = curSlipAngle(valid);
     curCorneringForce = curCorneringForce(valid);
 
+    medianCorneringForce = median(curCorneringForce, 'omitnan');
+    madCorneringForce = median(abs(curCorneringForce - medianCorneringForce), 'omitnan');
+
+    outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
+    curCorneringForce(outlierMask) = NaN;
+
     [saSorted, sortIdx] = sort(sa);
     cfSorted = cf(sortIdx);
 
