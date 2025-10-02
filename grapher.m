@@ -53,7 +53,7 @@ for i = 1:length(uniqueLoads)
     end
 
     edges = min(curSlipAngle):slipAngleBinWidth:max(curSlipAngle);
-    centers = edges(1:end - 1) + angleBinWidth / 2;
+    centers = edges(1:end - 1) + slipAngleBinWidth / 2;
     medianCorneringForce = nan(size(centers));
     counts = zeros(size(centers));
 
