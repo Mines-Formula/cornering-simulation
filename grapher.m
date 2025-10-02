@@ -15,9 +15,9 @@ order = 2;
 cutoff = 0.05;
 [b, a] = butter(order, cutoff, 'low');
 
-slipAngelBinWidth = 0.5;
+slipAngleBinWidth = 0.5;
 minPointsperLoad = 30; 
-minSlipAngelPoints = 5;
+minSlipAnglePoints = 5;
 
 colors = lines(length(uniqueLoads));
 figure('Color', [1,1,1]);
@@ -27,9 +27,16 @@ grid on;
 for i = 1:length(uniqueLoads)
     thisLoad = uniqueLoads(i);
     idx = (loadBins == thisLoad);
+    curSlipAngle = slipAngleRaw(idx);
+    curCorneringForce = corneringForceRaw(idx);
 
-    sa = slipAngleRaw(idx);
-    cf = corneringForceRaw(idx);
+    if numel(curSlipAngle) < minPointsperLoad
+        continue
+    end
+
+    valid = ~isnan(curSlipAngle) & ~isnan(curCorneringForce);
+    curSlipAngle = curSlipAngle(valid);
+    curCorneringForce = curCorneringForce(valid);
 
     [saSorted, sortIdx] = sort(sa);
     cfSorted = cf(sortIdx);
