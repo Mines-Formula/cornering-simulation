@@ -1,6 +1,8 @@
 clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
+withOriginalPlot = false;
+
 newTable = readtable(inFile);
 slipAngleRaw = newTable.SlipAngle;
 corneringForceRaw = newTable.LateralForce;
@@ -81,7 +83,9 @@ for i = 1:length(uniqueLoads)
     %cfPlot = cfSorted(1:step:end);
     %scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
 
-    scatter(curSlipAngle, curCorneringForce, 6, colors(i,:), 'filled', 'MarkerFaceAlpha', 0.12, 'MarkerEdgeAlpha', 0.06);
+    if withOriginalPlot
+        scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
+    end
     plot(binnedSlipAngle, smoothCorneringForce, '-', 'LineWidth', 2, 'Color', colors(i,:));
 end
 
