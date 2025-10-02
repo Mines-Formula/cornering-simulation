@@ -52,7 +52,7 @@ for i = 1:length(uniqueLoads)
         continue
     end
 
-    edges = min(curSlipAngle):angleBinWidth:max(curSlipAngle);
+    edges = min(curSlipAngle):slipAngleBinWidth:max(curSlipAngle);
     centers = edges(1:end - 1) + angleBinWidth / 2;
     medianCorneringForce = nan(size(centers));
     counts = zeros(size(centers));
@@ -81,7 +81,8 @@ for i = 1:length(uniqueLoads)
     %cfPlot = cfSorted(1:step:end);
     %scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
 
-    plot(saSorted, cfFilt, 'LineWidth', 2, 'Color', colors(i,:));
+    scatter(curSlipAngle, curCorneringForce, 6, colors(i,:), 'filled', 'MarkerFaceAlpha', 0.12, 'MarkerEdgeAlpha', 0.06);
+    plot(binnedSlipAngle, smoothCorneringForce, '-', 'LineWidth', 2, 'Color', colors(i,:));
 end
 
 xlabel('Slip Angle (deg)');
