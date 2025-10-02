@@ -27,18 +27,24 @@ pdy1 = dy / fz0
 x = np.array([100*9.81, 200*9.81, 300*9.81])
 y = np.array([-20.6, -37.4, -49.5])
 
-# Calculate the polynomial trend line (degree 2)
-values = np.polyfit(x, y, 2)
-eqn = np.poly1d(values)
-print(eqn)
+#get the max vertical load using a polynomial
+def get_max_vertical_load_poly(degree):
+    # calculate the polynomial trend line (degree 2)
+    values = np.polyfit(x, y, degree)
+    eqn = np.poly1d(values)
+    #print(eqn)
 
-#take the derivative
-eqn_deriv = eqn.deriv()
-print(f"Derivative: {eqn_deriv}")
-#find the roots based on the coeff
-#root = max value of stiffness (still of type list)
-root = np.roots(eqn_deriv.coeffs)
-print(root)
+    #take the derivative
+    eqn_deriv = eqn.deriv()
+    #print(f"Derivative: {eqn_deriv}")
+    #find the roots based on the coeff
+    #root = max value of stiffness (still of type list)
+    root = np.roots(eqn_deriv.coeffs)
+    return root
+
+#degree of two is the closest, but still very far off
+max_vertical_load_poly = get_max_vertical_load_poly(2)
+print(max_vertical_load)
 
 '''
 #step 4 - shape parameter
