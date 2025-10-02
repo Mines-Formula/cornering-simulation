@@ -44,6 +44,16 @@ for i = 1:length(uniqueLoads)
     outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
     curCorneringForce(outlierMask) = NaN;
 
+    valid = ~isnan(curCorneringForce);
+    curSlipAngle = curSlipAngle(valid);
+    curCorneringForce = curCorneringForce(valid);
+
+    if numel(curSlipAngle) < minPointsperLoad
+        continue
+    end
+
+    edges = min(curSlipAngle):angleBinWidth:max(curSlipAngle);
+
     [saSorted, sortIdx] = sort(sa);
     cfSorted = cf(sortIdx);
 
