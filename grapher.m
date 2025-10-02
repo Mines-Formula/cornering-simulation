@@ -59,22 +59,21 @@ for i = 1:length(uniqueLoads)
 
     for j = 1:length(edges) - 1
         inBin = curSlipAngle >= edges(j) & curSlipAngle < edges(j + 1);
+        counts(j) = sum(inBin);
+        if counts(j) >= minPointsperLoad
+            medianCorneringForce(j) = median(curCorneringForce(inBin), 'omitnan');
+        end
+    end
 
+    validBins = ~isnan(medianCorneringForce);
+    if sum(validBins) < max(3 * order + 1, 10) % Check if there is enough to filter
+        continue
+    end
 
+    binnedSlipAngle = centers(validBins);
+    binnedCorneringForce = medianCorneringForce(validBins);
 
-
-
-
-
-
-
-
-
-        
-    [saSorted, sortIdx] = sort(sa);
-    cfSorted = cf(sortIdx);
-
-    cfFilt = filtfilt(b, a, cfSorted);
+    smoothCorneringForce = filtfilt(b, a, binnedCorneringForce);
 
     % Added step
     step = 20;
