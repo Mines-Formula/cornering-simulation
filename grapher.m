@@ -1,7 +1,7 @@
 clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
-withOriginalPlot = false;
+withOriginalPlot = true;
 
 newTable = readtable(inFile);
 slipAngleRaw = newTable.SlipAngle;
@@ -45,6 +45,12 @@ for i = 1:length(uniqueLoads)
 
     outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
     curCorneringForce(outlierMask) = NaN;
+
+
+    if abs(medianCorneringForce) > 50
+        tooSmall = abs(curCorneringForce) < 0.02 * abs(medianCorneringForce);
+        curCorneringForce(tooSmall) = NaN;
+    end
 
     valid = ~isnan(curCorneringForce);
     curSlipAngle = curSlipAngle(valid);
