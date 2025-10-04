@@ -3,6 +3,8 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt
+from scipy.optimize import curve_fit
+import sympy as sp
 
 df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_ordered_normal_force.csv")
 
@@ -24,48 +26,47 @@ pdy1 = dy / fz0
 
 #STEP 3 - stiffness parameters
 #example data:
-x = np.array([100*9.81, 200*9.81, 300*9.81])
+x = np.array([.9810, 1.9620, 2.9430])
+print(f"x type: {x.dtype}")
 y = np.array([-20.6, -37.4, -49.5])
+print(f"y type: {y.dtype}")
 
 #get the max vertical load using a polynomial
-def get_max_vertical_load_poly(degree):
-    # calculate the polynomial trend line (degree 2)
-    values = np.polyfit(x, y, degree)
-    eqn = np.poly1d(values)
-    #print(eqn)
-
-    #take the derivative
-    eqn_deriv = eqn.deriv()
-    #print(f"Derivative: {eqn_deriv}")
-    #find the roots based on the coeff
-    #root = max value of stiffness (still of type list)
-    root = np.roots(eqn_deriv.coeffs)
-    return root
-
-#degree of two is the closest, but still very far off
-max_vertical_load_poly = get_max_vertical_load_poly(2)
-print(max_vertical_load)
-
-'''
-#step 4 - shape parameter
-# Using google AI overview code for butterworth filter
-fs = 1000  # Sampling frequency (Hz)
-cutoff_freq = 50 # Cutoff frequency (Hz)
-nyquist_freq = 0.5 * fs
-normalized_cutoff = cutoff_freq / nyquist_freq
-order = 4 # Filter order
-
-b, a = butter(order, normalized_cutoff, btype="low")
-# Assuming 'data_series' is your Pandas Series
-other_df = pd.read_csv("C:/Users/ajsau/Documents/formula/corneringSim/cornering-simulation/LCO_ordered_slip_angle_and_lateral_force.csv")
-sa_filtered = filtfilt(b, a, other_df["SlipAngle"].values)
-dy_filtered = filtfilt(b, a, other_df["LateralForce"].values)
-plt.plot(sa_filtered, dy_filtered)
+# calculate the polynomial trend line (degree 2)
+def exponential(x, r, k, x0):
+    return (r * np.exp(-k * (x - x0)))
+popt, pcov = curve_fit(exponential, x, y)
+print(popt)
+x_wahoo = np.linspace(0,9,9000)
+plt.plot(x_wahoo, exponential(x_wahoo, *popt), 'r-')
+plt.scatter(x, y)
 plt.show()
 
+#former polynomial
+'''
+values = np.polyfit(x, y, 2)
+eqn = np.poly1d(values)
+print(type(eqn))
 
-print(sa.head())
-print(fz0.head())
-plt.plot(sa, fz0)
+#take the derivative
+eqn_deriv = eqn.deriv()
+#print(f"Derivative: {eqn_deriv}")
+#find the roots based on the coeff
+#root = max value of stiffness (still of type list)
+roots = np.roots(eqn_deriv.coeffs)
+
+#degree of two is the closest, but still very far off
+max_vertical_load_poly = roots[0]
+print(max_vertical_load_poly)
+pxy2 = (max_vertical_load_poly/fz0)
+#should be 3.77
+print(pxy2)
+
+x_wahoo = list(range(0,9000))
+plt.scatter(x, y)
+plt.plot(x_wahoo, eqn(x_wahoo), color="green")
+plt.plot(x_wahoo, eqn_deriv(x_wahoo), color="red")
+plt.xlim(0, 9000)
+plt.ylim(-90, 10)
 plt.show()
 '''
