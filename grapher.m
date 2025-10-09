@@ -36,7 +36,7 @@ for i = 1:length(uniqueLoads)
     curSlipAngle = slipAngleRaw(idx);
     curCorneringForce = corneringForceRaw(idx);
 
-    if numel(curSlipAngle) < minPointsperLoad
+    if numel(curSlipAngle) < minPointsPerLoad
         continue
     end
 
@@ -46,11 +46,11 @@ for i = 1:length(uniqueLoads)
     curCorneringForce = curCorneringForce(valid);
 
 
+    % median absolute value deviation to remove outliers
     medianCorneringForce = median(curCorneringForce);
-
     madCorneringForce = median(abs(curCorneringForce - medianCorneringForce));
-
-    outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
+    outlierMask = abs(curCorneringForce - medianCorneringForce) < 3 * max(madCorneringForce, 1e-6);
+    curSlipAngle(outlierMask) = NaN;
     curCorneringForce(outlierMask) = NaN;
 
 
@@ -63,7 +63,7 @@ for i = 1:length(uniqueLoads)
     curSlipAngle = curSlipAngle(valid);
     curCorneringForce = curCorneringForce(valid);
 
-    if numel(curSlipAngle) < minPointsperLoad
+    if numel(curSlipAngle) < minPointsPerLoad
         continue
     end
 
@@ -75,7 +75,7 @@ for i = 1:length(uniqueLoads)
     for j = 1:length(edges) - 1
         inBin = curSlipAngle >= edges(j) & curSlipAngle < edges(j + 1);
         counts(j) = sum(inBin);
-        if counts(j) >= minPointsperLoad
+        if counts(j) >= minPointsPerLoad
             medianCorneringForce(j) = median(curCorneringForce(inBin), 'omitnan');
         end
     end
@@ -100,7 +100,7 @@ for i = 1:length(uniqueLoads)
     cutoff = 0.15;
     [b, a] = butter(order, cutoff, 'low');
 
-    corneringForceSmoothUniform = filfilt(b, a, corneringForceInterpolation);
+    corneringForceSmoothUniform = filtfilt(b, a, corneringForceInterpolation);
 
     if withOriginalPlot
 
