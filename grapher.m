@@ -49,9 +49,9 @@ for i = 1:length(uniqueLoads)
     % median absolute value deviation to remove outliers
     medianCorneringForce = median(curCorneringForce);
     madCorneringForce = median(abs(curCorneringForce - medianCorneringForce));
-    outlierMask = abs(curCorneringForce - medianCorneringForce) < 3 * max(madCorneringForce, 1e-6);
-    curSlipAngle(outlierMask) = NaN;
-    curCorneringForce(outlierMask) = NaN;
+    outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
+    curSlipAngle(outlierMask) = [];
+    curCorneringForce(outlierMask) = [];
 
     % Slip Angle Bins
     edges = min(curSlipAngle):slipAngleBinWidth:max(curSlipAngle);
@@ -98,11 +98,6 @@ for i = 1:length(uniqueLoads)
     % This is the new LOESS based plot
     brightColor = min(colors(i,:) * 1.5, 1.0);
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
-
     
 end
 
-xlabel('Slip Angle (deg)');
-ylabel('Cornering Force (N)');
-title('Cornering Force vs Slip Angle');
-legend(cellstr(num2str(uniqueLoads, '%d N')), 'Location', 'best');
