@@ -81,13 +81,14 @@ for i = 1:length(uniqueLoads)
     binnedSlipAngle = centers(validBins);
     binnedCorneringForce = medianCorneringForce(validBins);
 
-    smoothCorneringForce = filtfilt(b, a, binnedCorneringForce);
+    [binnedSlipAngle, sidx] = sort(binnedSlipAngle);
+    binnedCorneringForce = binnedCorneringForce(sidx);
 
-    % Added step
-    %%step = 20;
-    %saPlot = saSorted(1:step:end);
-    %cfPlot = cfSorted(1:step:end);
-    %scatter(saSorted, cfSorted, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.2);
+
+
+
+    %%
+    smoothCorneringForce = filtfilt(b, a, binnedCorneringForce);
 
     if withOriginalPlot
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
