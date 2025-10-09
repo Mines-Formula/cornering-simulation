@@ -101,3 +101,8 @@ for i = 1:length(uniqueLoads)
     
 end
 
+xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
+ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
+title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0.95]);
+legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
+set(gca, 'Color', [0.5 0.5 0.5], 'XColor', [0.8 0.8 0.8], 'YColor', [0.8 0.8 0.8]);
