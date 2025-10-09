@@ -45,9 +45,10 @@ for i = 1:length(uniqueLoads)
     curSlipAngle = curSlipAngle(valid);
     curCorneringForce = curCorneringForce(valid);
 
-    
-    medianCorneringForce = median(curCorneringForce, 'omitnan');
-    madCorneringForce = median(abs(curCorneringForce - medianCorneringForce), 'omitnan');
+
+    medianCorneringForce = median(curCorneringForce);
+
+    madCorneringForce = median(abs(curCorneringForce - medianCorneringForce));
 
     outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
     curCorneringForce(outlierMask) = NaN;
