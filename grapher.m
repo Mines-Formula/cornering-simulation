@@ -12,7 +12,7 @@ order = 2;
 cutoff = 0.05;
 
 % loess parameters
-loessFrace = 0.2; % This is alpha
+loessFrac = 0.2; % This is alpha
 
 % import data
 newTable = readtable(inFile);
@@ -72,32 +72,34 @@ for i = 1:length(uniqueLoads)
         continue
     end
 
-    
-
     binnedSlipAngle = centers(validBins);
     binnedCorneringForce = medianCorneringForce(validBins);
-
     [binnedSlipAngle, sidx] = sort(binnedSlipAngle);
     binnedCorneringForce = binnedCorneringForce(sidx);
 
-    Ngrid = max(200, length(binnedSlipAngle) * 3);
-    slipAngleUniform = linspace(min(binnedSlipAngle), max(binnedSlipAngle), Ngrid);
-
-    corneringForceInterpolation = interp1(binnedSlipAngle, binnedCorneringForce, slipAngleUniform, 'linear', 'extrap');
-
-    order = 2;
-    cutoff = 0.15;
+    % The butterworth part
     [b, a] = butter(order, cutoff, 'low');
+    corneringForceSmooth = filtfilt(b, a, binnedCorneringForce);
 
-    corneringForceSmoothUniform = filtfilt(b, a, corneringForceInterpolation);
+    % LOESS
+    window = round(numel(binnedCorneringForce) * loessFrac);
+    loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
 
+    % Turn on or off the original scatter plot
     if withOriginalPlot
 
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
 
     end
 
-    plot(slipAngleUniform, corneringForceSmoothUniform, '-', 'LineWidth', 2, 'Color', colors(i,:));
+    % This is the previous plot just for comparison
+    plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d N (ORIGINAL)', thisLoad));
+
+    % This is the new LOESS based plot
+    brightColor = min(colors(i,:) * 1.5, 1.0);
+    plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
+
+    
 end
 
 xlabel('Slip Angle (deg)');
