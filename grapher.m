@@ -25,7 +25,7 @@ loadBins = round(normalForceRaw / 50) * 50;
 uniqueLoads = unique(loadBins);
 
 colors = lines(length(uniqueLoads));
-figure('Color', [0, 0, 0]);
+figure('Color', [0 0 0]);
 hold on;
 grid on;
 
@@ -88,7 +88,7 @@ for i = 1:length(uniqueLoads)
     % Turn on or off the original scatter plot
     if withOriginalPlot
 
-        scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
+        scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.25);
 
     end
 
@@ -105,4 +105,3 @@ xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
 ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
 title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0.95]);
 legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
-set(gca, 'Color', [0.5 0.5 0.5], 'XColor', [0.8 0.8 0.8], 'YColor', [0.8 0.8 0.8]);
