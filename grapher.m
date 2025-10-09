@@ -3,26 +3,28 @@ inFile = "R20_sorted.csv";
 
 withOriginalPlot = true;
 
+% Parameters
 slipAngleBinWidth = 0.5;
 minPointsPerLoad = 30;
 
+% Butterworth Parameters
+order = 2;
+cutoff = 0.05;
+
+% loess parameters
+loessFrace = 0.2; % This is alpha
+
+% import data
 newTable = readtable(inFile);
 slipAngleRaw = newTable.SlipAngle;
 corneringForceRaw = newTable.LateralForce;
 normalForceRaw = newTable.NormalForce;
 
-% bins by normal force to the nearest 50
+% Bin the loads in groups of 50
 loadBins = round(normalForceRaw / 50) * 50;
 uniqueLoads = unique(loadBins);
 
-% Butterworth
-order = 2;
-cutoff = 0.05;
-[b, a] = butter(order, cutoff, 'low');
 
-slipAngleBinWidth = 0.5;
-minPointsperLoad = 30; 
-minSlipAnglePoints = 5;
 
 colors = lines(length(uniqueLoads));
 figure('Color', [1,1,1]);
