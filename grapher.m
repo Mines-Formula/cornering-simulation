@@ -24,14 +24,13 @@ normalForceRaw = newTable.NormalForce;
 loadBins = round(normalForceRaw / 50) * 50;
 uniqueLoads = unique(loadBins);
 
-
-
 colors = lines(length(uniqueLoads));
-figure('Color', [1,1,1]);
+figure('Color', [0, 0, 0]);
 hold on;
 grid on;
 
 for i = 1:length(uniqueLoads)
+
     thisLoad = uniqueLoads(i);
     idx = (loadBins == thisLoad);
     curSlipAngle = slipAngleRaw(idx);
@@ -100,12 +99,12 @@ for i = 1:length(uniqueLoads)
 
     corneringForceSmoothUniform = filfilt(b, a, corneringForceInterpolation);
 
-
-
-    % Don't touch below this for now
     if withOriginalPlot
+
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
+
     end
+    
     plot(slipAngleUniform, corneringForceSmoothUniform, '-', 'LineWidth', 2, 'Color', colors(i,:));
 end
 
