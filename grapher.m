@@ -40,10 +40,12 @@ for i = 1:length(uniqueLoads)
         continue
     end
 
+    % clears the NaN values
     valid = ~isnan(curSlipAngle) & ~isnan(curCorneringForce);
     curSlipAngle = curSlipAngle(valid);
     curCorneringForce = curCorneringForce(valid);
 
+    
     medianCorneringForce = median(curCorneringForce, 'omitnan');
     madCorneringForce = median(abs(curCorneringForce - medianCorneringForce), 'omitnan');
 
@@ -104,7 +106,7 @@ for i = 1:length(uniqueLoads)
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
 
     end
-    
+
     plot(slipAngleUniform, corneringForceSmoothUniform, '-', 'LineWidth', 2, 'Color', colors(i,:));
 end
 
