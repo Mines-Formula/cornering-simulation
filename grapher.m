@@ -53,20 +53,7 @@ for i = 1:length(uniqueLoads)
     curSlipAngle(outlierMask) = NaN;
     curCorneringForce(outlierMask) = NaN;
 
-
-    if abs(medianCorneringForce) > 50
-        tooSmall = abs(curCorneringForce) < 0.02 * abs(medianCorneringForce);
-        curCorneringForce(tooSmall) = NaN;
-    end
-
-    valid = ~isnan(curCorneringForce);
-    curSlipAngle = curSlipAngle(valid);
-    curCorneringForce = curCorneringForce(valid);
-
-    if numel(curSlipAngle) < minPointsPerLoad
-        continue
-    end
-
+    % Slip Angle Bins
     edges = min(curSlipAngle):slipAngleBinWidth:max(curSlipAngle);
     centers = edges(1:end - 1) + slipAngleBinWidth / 2;
     medianCorneringForce = nan(size(centers));
@@ -81,9 +68,11 @@ for i = 1:length(uniqueLoads)
     end
 
     validBins = ~isnan(medianCorneringForce);
-    if sum(validBins) < max(3 * order + 1, 10) % Check if there is enough to filter
+    if sum(validBins) < 10
         continue
     end
+
+    
 
     binnedSlipAngle = centers(validBins);
     binnedCorneringForce = medianCorneringForce(validBins);
