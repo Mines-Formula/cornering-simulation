@@ -87,21 +87,15 @@ for i = 1:length(uniqueLoads)
     Ngrid = max(200, length(binnedSlipAngle) * 3);
     slipAngleUniform = linspace(min(binnedSlipAngle), max(binnedSlipAngle), Ngrid);
 
-    corneringForceInterpolation = interp1(binnedSlipAngle, binnedCorneringForce, slipAngleUniform, 'linear', 'extrap');
-
-    order = 2;
-    cutoff = 0.15;
-    [b, a] = butter(order, cutoff, 'low');
-
-    corneringForceSmoothUniform = filfilt(b, a, corneringForceInterpolation);
-
-
+    corneringForceInterpolation = interp1(binnedSlipAngle, binnedCorneringForce, slipAngleUniform, 'lin')
 
     % Don't touch below this for now
+    smoothCorneringForce = filtfilt(b, a, binnedCorneringForce);
+
     if withOriginalPlot
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
     end
-    plot(slipAngleUniform, corneringForceSmoothUniform, '-', 'LineWidth', 2, 'Color', colors(i,:));
+    plot(binnedSlipAngle, smoothCorneringForce, '-', 'LineWidth', 2, 'Color', colors(i,:));
 end
 
 xlabel('Slip Angle (deg)');
