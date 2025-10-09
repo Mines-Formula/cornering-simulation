@@ -27,15 +27,14 @@ pdy1 = dy / fz0
 #STEP 3 - stiffness parameters
 #example data:
 x = np.array([.9810, 1.9620, 2.9430])
-print(f"x type: {x.dtype}")
 y = np.array([-20.6, -37.4, -49.5])
-print(f"y type: {y.dtype}")
 
 #get the max vertical load using a polynomial
 # calculate the polynomial trend line (degree 2)
-def exponential(x, r, k, x0):
-    return (r * np.exp(-k * (x - x0)))
-popt, pcov = curve_fit(exponential, x, y)
+def exponential(x, r, k, y0):
+    return (r * np.exp(-k * (x)) - y0)
+    #y = a * np.exp(b * x) + c - suggested by google ai
+popt, pcov = curve_fit(exponential, x, y, p0=(10,1,1))
 print(popt)
 x_wahoo = np.linspace(0,9,9000)
 plt.plot(x_wahoo, exponential(x_wahoo, *popt), 'r-')
