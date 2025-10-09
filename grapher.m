@@ -3,6 +3,9 @@ inFile = "R20_sorted.csv";
 
 withOriginalPlot = true;
 
+slipAngleBinWidth = 0.5;
+minPointsPerLoad = 30;
+
 newTable = readtable(inFile);
 slipAngleRaw = newTable.SlipAngle;
 corneringForceRaw = newTable.LateralForce;
