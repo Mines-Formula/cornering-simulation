@@ -129,10 +129,10 @@ print(f"pdy1 value: {pdy2}")
 #camber is from step 9
 #**example data**
 phy2 = 0.35
-camber = 0.0698
+camberExample = 0.0698
 #**end example data**
 phy2 = phy2 * (math.pi / 180) #convert to radians
-phy3 = (phy2 - phy1) / camber
+phy3 = (phy2 - phy1) / camberExample
 print(f"phy3 = {phy3}")
 
 #step 11
@@ -143,5 +143,18 @@ fzExample = 1962
 pvy1Example = 40
 #**example data**
 shift = pvy2 - pvy1Example
-pvy3 = shift / (fzExample * camber)
+pvy3 = shift / (fzExample * camberExample)
 print(f"pvy3: {pvy3}")
+
+#step 12
+#we get to choose what mass we want to play with i think
+massOther = 300
+#calculate how friction coefficient varies with load - pdy2
+fzOther = massOther*9.81
+#**example data**
+fzExample = 1962
+#**end example data**
+vShiftIncrease = (fzOther/fzExample*shift) - shift
+dfz = (fzOther - fzExample)/fzExample
+pvy4 = -vShiftIncrease/(fzOther * dfz * camberExample)
+print(f"pvy4 = {pvy4}")
