@@ -1,3 +1,4 @@
+#when we have actual data, remove any example data
 import pandas as pd
 import numpy as np
 import math
@@ -91,7 +92,7 @@ print(f"pey1 = {pey1}")
 
 
 #step 6
-#xoffset - get x intercept of step 2 graph
+#xoffset - dashed line horizontal shift
 #**example data**
 xoffset = 0.5 
 #**end example data**
@@ -99,7 +100,7 @@ phy1 = xoffset * (math.pi/180)
 print(f"Horizontal shift phy1: {phy1}")
 
 #step 7
-#yoffset = get y intercept of step 2 graph
+#yoffset = dashed line vertical shift
 #**example data**
 yoffset = 40
 #**end example data**
@@ -124,7 +125,7 @@ pdy2 = deltamu/deltaFz*fz0Example
 print(f"pdy1 value: {pdy2}")
 
 #step 10
-#phy2 is from step 9'
+#phy2 is from step 9 - horizontal shift of dashed line
 #camber is from step 9
 #**example data**
 phy2 = 0.35
@@ -133,3 +134,14 @@ camber = 0.0698
 phy2 = phy2 * (math.pi / 180) #convert to radians
 phy3 = (phy2 - phy1) / camber
 print(f"phy3 = {phy3}")
+
+#step 11
+#pvy2 is from vertical shift of dashed line in step 9
+#**example data**
+pvy2 = 600
+fzExample = 1962
+pvy1Example = 40
+#**example data**
+shift = pvy2 - pvy1Example
+pvy3 = shift / (fzExample * camber)
+print(f"pvy3: {pvy3}")
