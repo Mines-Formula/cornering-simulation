@@ -66,7 +66,10 @@ Dy = abs(min(other_df["LateralForce"]))
 pcy1 = 1 + (1 - (2/math.pi)*math.asin(Ya/Dy))
 print(f"Dy from step 4: {Dy}")
 print(f"pcy1: {pcy1}")
-Cy = pcy1
+lambdaCY = 1
+print(f"lamda is {lambdaCY}, so Cy = pcy1*{lambdaCY}")
+Cy = pcy1 * lambdaCY
+print(f"Cy = {Cy}")
 
 
 #step 5 pey1
@@ -102,3 +105,20 @@ yoffset = 40
 #**end example data**
 pvy1 = yoffset/fz0
 print(f"Value of pvy1: {pvy1}")
+
+#step 8
+#we get to choose what mass we want to play with i think
+massOther = 300
+#calculate how friction coefficient varies with load - pdy2
+fzOther = massOther*9.81
+#fy in kN comes from step 2 graph - max of graph? at 300 kg or some mass
+#**example data**
+fy = 4.3
+pdy1 = 1.55
+fz0Example = 1962
+#**end example data**
+mu = fy / (fzOther/1000) #get into kN DO WE NEED THIS?
+deltaFz = fz0Example - fzOther
+deltamu = abs(pdy1) - mu
+pdy2 = deltamu/deltaFz*fz0Example
+print(f"pdy1 value: {pdy2}")
