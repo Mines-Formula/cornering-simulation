@@ -63,6 +63,23 @@ Dy = abs(min(other_df["LateralForce"]))
 
 #calculate pcy1 - shape parameter
 pcy1 = 1 + (1 - (2/math.pi)*math.asin(Ya/Dy))
+print(f"Dy from step 4: {Dy}")
 print(f"pcy1: {pcy1}")
+Cy = pcy1
 
-plt.show()
+
+#step 5 pey1
+#Dy is from step 2 not from step 4?
+#Cy is from step 4
+#xm is also from step 2 - peak slip angle in radians
+#where does slope of fz0 curve come from? - sFz0
+#using example data so I know it will work
+pcy1 = 1.5
+sFz0 = -73456
+Cy = pcy1
+Dy = -3050
+xm = 0.14
+By = sFz0 / (Cy * Dy)
+Bxm = By * xm
+pey1 = (Bxm - math.tan(math.pi/(2*pcy1)))/(Bxm - math.atan(Bxm))
+print(f"pey1 = {pey1}")
