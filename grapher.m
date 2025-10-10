@@ -31,7 +31,6 @@ grid on;
 
 results = table('Size', [0,6], 'VariableTypes', {'double', 'double', 'double', 'double', 'double', 'double'}, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'R2'});
 
-
 for i = 1:length(uniqueLoads)
 
     thisLoad = uniqueLoads(i);
@@ -53,8 +52,8 @@ for i = 1:length(uniqueLoads)
     medianCorneringForce = median(curCorneringForce);
     madCorneringForce = median(abs(curCorneringForce - medianCorneringForce));
     outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
-    curSlipAngle(outlierMask) = [];
-    curCorneringForce(outlierMask) = [];
+    curSlipAngle = curSlipAngle(outlierMask);
+    curCorneringForce = curCorneringForce(outlierMask);
 
     % Slip Angle Bins
     edges = min(curSlipAngle):slipAngleBinWidth:max(curSlipAngle);
@@ -80,10 +79,6 @@ for i = 1:length(uniqueLoads)
     [binnedSlipAngle, sidx] = sort(binnedSlipAngle);
     binnedCorneringForce = binnedCorneringForce(sidx);
 
-    % The butterworth part
-    [b, a] = butter(order, cutoff, 'low');
-    corneringForceSmooth = filtfilt(b, a, binnedCorneringForce);
-
     % LOESS
     window = round(numel(binnedCorneringForce) * loessFrac);
     loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
@@ -94,9 +89,6 @@ for i = 1:length(uniqueLoads)
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.25);
 
     end
-
-    % This is the previous plot just for comparison
-    plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d N (ORIGINAL)', thisLoad));
 
     % This is the new LOESS based plot
     brightColor = min(colors(i,:) * 1.5, 1.0);
