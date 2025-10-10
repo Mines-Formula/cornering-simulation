@@ -51,7 +51,7 @@ for i = 1:length(uniqueLoads)
     % median absolute value deviation to remove outliers
     medianCorneringForce = median(curCorneringForce);
     madCorneringForce = median(abs(curCorneringForce - medianCorneringForce));
-    outlierMask = abs(curCorneringForce - medianCorneringForce) > 3 * max(madCorneringForce, 1e-6);
+    outlierMask = abs(curCorneringForce - medianCorneringForce) < 3 * max(madCorneringForce, 1e-6);
     curSlipAngle = curSlipAngle(outlierMask);
     curCorneringForce = curCorneringForce(outlierMask);
 
@@ -80,7 +80,7 @@ for i = 1:length(uniqueLoads)
     binnedCorneringForce = binnedCorneringForce(sidx);
 
     % LOESS
-    window = round(numel(binnedCorneringForce) * loessFrac);
+    window = max(round(numel(binnedCorneringForce) * loessFrac), 5);
     loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
 
     % Turn on or off the original scatter plot
@@ -126,8 +126,8 @@ end
 xlabel('Slip Angle (deg)', 'Color', 'w');
 ylabel('Cornering Force (N)', 'Color', 'w');
 title('Cornering Force vs Slip Angle - LOESS + Pacjeka Fits', 'Color', 'w');
-legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
-set(gca, 'Color', [0 0 0], 'XColor', 'w', 'YColor', 'w');
+legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9, 'Box', 'off');
+set(gca, 'Color', [0 0 0], 'XColor', 'w', 'YColor', 'w', 'GridColor', [0.3 0.3 0.3]);
 grid on;
 
 writetable(results, 'pacejka_fits.csv');
