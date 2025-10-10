@@ -95,10 +95,7 @@ for i = 1:length(uniqueLoads)
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
 
     % Pacejka Stuff
-    x = deg2rad(binnedSlipAngle);
-    y = loessForce;
-
-    pacejkaFunction = @(p, x) p(3) .* sin(p(2) .* atan(p(1).*x - p(4).*(p(1).*x - atan(p(1).*x))));
+    x = deg2rad(binnedSlipAngle)
     
 end
 
