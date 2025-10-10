@@ -95,11 +95,40 @@ for i = 1:length(uniqueLoads)
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
 
     % Pacejka Stuff
-    x = deg2rad(binnedSlipAngle)
+    x = deg2rad(binnedSlipAngle);
+    y = loessForce;
+
+    pacejkaFunction = @(p, x) p(3) .* sin(p(2) .* atan(p(1).*x - p(4).*(p(1).*x - atan(p(1).*x))));
+
+    p0 = [10, 1.3, max(abs(y)), 0.97];
+    lb = [0, 0.5, 0, 0];
+    ub - [100, 3, 2 * max(abs(y)), 1];
+
+    opts = optimoptions('lsqcurvefit', 'Display', 'off');
+    [pFit, ~, residual] = lsqcurvefit(pacejkaFunction, p0, x, y, lb, ub, opts);
+
+    SSResult = sum(residual.^2);
+    SSTotal = sum((y - mean(y)).^2);
+    R2 = 1 - SSResult/SSTotal;
+
+    xFit = linspace(min(x), max(x), 400);
+    yFit = pacejkaFunction(pFit, xFit);
+
+    plot(rad2deg(xFit), yFit, '-', 'LineWidth', 2.5, 'Color', colors(i,:), 'DisplayName', sprintf('%d N (Pacejka)', thisLoad));
+
+    fprintf('\n--- %.0f N Load ---\n', thisLoad);
+    fprintf('B = %.4f, C = %.4f, D = %.4f, E = %.4f, R^2 = %.4f\n', pFit(1), pFit(2), pFit(3), pFit(4), R2);
+    
+    results = [results; {thisLoad, pFit(1), pFit(2), pFit(3), pFit(4), R2}];
     
 end
 
-xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
-ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
-title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0.95]);
+xlabel('Slip Angle (deg)', 'Color', 'w');
+ylabel('Cornering Force (N)', 'Color', 'w');
+title('Cornering Force vs Slip Angle - LOESS + Pacjeka Fits', 'Color', 'w');
 legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
+set(gca, 'Color', [0 0 0], 'XColor', 'w', 'YColor', 'w');
+grid on;
+
+writetable(results, 'pacejka_fits.csv');
+fprintf(\n)
