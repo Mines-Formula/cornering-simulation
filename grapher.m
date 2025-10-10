@@ -29,6 +29,9 @@ figure('Color', [0 0 0]);
 hold on;
 grid on;
 
+results = table('Size', [0,6], 'VariableTypes', {'double', 'double', 'double', 'double', 'double', 'double'}, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'R2'});
+
+
 for i = 1:length(uniqueLoads)
 
     thisLoad = uniqueLoads(i);
