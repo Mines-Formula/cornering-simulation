@@ -87,18 +87,10 @@ for i = 1:length(uniqueLoads)
 
     % Compute D_y
     [peakForce, peakIdx] = max(loessForce);
-    [valleyForce, valleyIdx] = min(loessForce);
+    valleyForce, valleyIdx] = min(loessForce);
 
     Dy = (abs(peakForce) + abs(valleyForce)) / 2;
     fprintf('Load = %d N --> D_y = %.2f N\n', thisLoad, Dy);
-
-    if ~exist('Dy_results', 'var')
-        Dy_results = table(thisLoad, Dy);
-    else
-        Dy_results = [Dy_results; table(thisLoad, Dy)];
-    end
-
-
 
     % Turn on or off the original scatter plot
     if withOriginalPlot
@@ -115,9 +107,6 @@ for i = 1:length(uniqueLoads)
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
     
 end
-
-disp('Summary of D_y values:');
-disp(Dy_results);
 
 xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
 ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
