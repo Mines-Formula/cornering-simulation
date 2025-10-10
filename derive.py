@@ -122,3 +122,14 @@ deltaFz = fz0Example - fzOther
 deltamu = abs(pdy1) - mu
 pdy2 = deltamu/deltaFz*fz0Example
 print(f"pdy1 value: {pdy2}")
+
+#step 10
+#phy2 is from step 9'
+#camber is from step 9
+#**example data**
+phy2 = 0.35
+camber = 0.0698
+#**end example data**
+phy2 = phy2 * (math.pi / 180) #convert to radians
+phy3 = (phy2 - phy1) / camber
+print(f"phy3 = {phy3}")
