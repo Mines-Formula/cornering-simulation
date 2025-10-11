@@ -153,7 +153,7 @@ for i = 1:length(uniqueLoads)
     kyBook = FyTarget / (alphaAtFy * pi / 180);
 
     Fz0 = 1962; % defined in the book
-    pkyBook = kyBook / 1980;
+    pkyBook = kyBook / Fz0;
 
     fprintf('Load = %d N --> alpha@Fy=%.2f°, k_y=%.0f N/rad, pK_y=%.1f\n', abs(thisLoad), alphaAtFy, kyBook, pkyBook);
 
