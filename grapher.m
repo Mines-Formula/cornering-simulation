@@ -127,9 +127,9 @@ for i = 1:length(uniqueLoads)
     plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d N (Pacejka Fit)', thisLoad));
 
     if ~exist('fitResults', 'var')
-        fitResults = table(thisLoad, B, C, D, E);
+        fitResults = table(abs(thisLoad), B, C, D, E);
     else
-        fitResults = [fitResults; table(thisLoad, B, C, D, E)];
+        fitResults = [fitResults; table(abs(thisLoad), B, C, D, E)];
     end
 
     % Turn on or off the original scatter plot
