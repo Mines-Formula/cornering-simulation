@@ -85,12 +85,39 @@ for i = 1:length(uniqueLoads)
     window = round(numel(binnedCorneringForce) * loessFrac);
     loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
 
+    pacejkaFunction = @(params, alphs) params(3) .* sin(params(2) .* sin(params(2) .* atan(params(1) * alpha - params(4) * params(1) * alpha - atan(params(1) * alpha))));
+
+    initialGuess = [10, 1.3, Dy, 0.97];
+
+    opts = opimoptions('lsqcurvefit', 'Display', 'off');
+    params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, [], [], opts); 
+
+    B = params(1);
+    C = params(2);
+    D = params(3);
+    E = params(4);
+
+    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3\n', thisLoad, B, C, D, E);
+
+    alphaFine = linespace(min())
+
     % Compute D_y
     [peakForce, peakIdx] = max(loessForce);
-    valleyForce, valleyIdx] = min(loessForce);
+    [valleyForce, valleyIdx] = min(loessForce);
 
     Dy = (abs(peakForce) + abs(valleyForce)) / 2;
-    fprintf('Load = %d N --> D_y = %.2f N\n', thisLoad, Dy);
+
+    % Compute pD_y
+    pDy = Dy / (abs(thisLoad) * 9.8);
+
+    fprintf('Load = %d N --> D_y = %.2f N,  pD_y = %.4f\n', abs(thisLoad), Dy, pDy);
+
+    if ~exist('Dy_results', 'var')
+        Dy_results = table(thisLoad, Dy, pDy);
+    else
+        Dy_results = [Dy_results; table(thisLoad, Dy, pDy)];
+    end
+
 
     % Turn on or off the original scatter plot
     if withOriginalPlot
@@ -100,11 +127,11 @@ for i = 1:length(uniqueLoads)
     end
 
     % This is the previous plot just for comparison
-    plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d N (ORIGINAL)', thisLoad));
+    plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d kg (ORIGINAL)', abs(thisLoad)));
 
     % This is the new LOESS based plot
     brightColor = min(colors(i,:) * 1.5, 1.0);
-    plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
+    plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d kg (LOESS)', abs(thisLoad)));
     
 end
 

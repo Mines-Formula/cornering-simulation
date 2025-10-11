@@ -85,6 +85,25 @@ for i = 1:length(uniqueLoads)
     window = round(numel(binnedCorneringForce) * loessFrac);
     loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
 
+    pacejkaFunction = @(params, alphs) params(3) .* sin(params(2) .* sin(params(2) .* atan(params(1) * alpha - params(4) * params(1) * alpha - atan(params(1) * alpha))));
+
+    initialGuess = [10, 1.3, Dy, 0.97];
+
+    opts = opimoptions('lsqcurvefit', 'Display', 'off');
+    params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, [], [], opts); 
+
+    B = params(1);
+    C = params(2);
+    D = params(3);
+    E = params(4);
+
+    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3\n', thisLoad, B, C, D, E);
+
+    alphaFine = linespace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
+    FyFit = pacejkaFunction(params, alphaFine * pi / 180);
+
+    plot(alphaFin, )
+
     % Compute D_y
     [peakForce, peakIdx] = max(loessForce);
     [valleyForce, valleyIdx] = min(loessForce);
