@@ -1,7 +1,7 @@
 clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
-withOriginalPlot = true;
+withOriginalPlot = false;
 
 % Parameters
 slipAngleBinWidth = 0.5;
@@ -102,7 +102,7 @@ for i = 1:length(uniqueLoads)
     alphaFine = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
 
-    plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d N (Pacejka Fit)', thisLoad));
+    plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d kg (Pacejka Fit)', thisLoad));
 
     if ~exist('fitResults', 'var')
         fitResults = table(abs(thisLoad), B, C, D, E);
