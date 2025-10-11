@@ -110,14 +110,16 @@ for i = 1:length(uniqueLoads)
     initialGuess = [10, 1.3, Dy, 0.97];
 
     opts = optimoptions('lsqcurvefit', 'Display', 'off');
-    params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, [], [], opts); 
+    lb = [0, 0.5, 0.5 * Dy, 0];
+    ub = [50, 2.0, 1.5 * Dy, 1];
+    params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, lb, ub, opts); 
 
     B = params(1);
     C = params(2);
     D = params(3);
     E = params(4);
 
-    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3f\n', thisLoad, B, C, D, E);
+    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3f\n', abs(thisLoad), B, C, D, E);
 
     alphaFine = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
@@ -133,7 +135,7 @@ for i = 1:length(uniqueLoads)
     % Turn on or off the original scatter plot
     if withOriginalPlot
 
-        scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.25);
+        scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
 
     end
 
