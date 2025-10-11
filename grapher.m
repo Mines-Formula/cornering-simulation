@@ -176,4 +176,14 @@ if exist('ky_fit_table', 'var')
 
     pQuad = polyfit(loads, normKy, 2);
     loadsFine = linspace(min(loads), max(loads) * 5, 5000);
+    normKyFit = polyval(pQuad, loadsFine);
+
+    [pKy1, idxPeak] = min(normKyFit);
+    loadAtPeak = loadsFine(idxPeak);
+    pKy2 = loadsAtPeak / FZ0;
+
+    fprintf('\npKy results \n');
+    fprintf('pKy1 = %.4f (most negative normalized stiffness)\n', pKy1);
+    fprintf('pKy2 = %.4f (load at peak / FZ0)\n', pKy2);
+
 end
