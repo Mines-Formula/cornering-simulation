@@ -137,12 +137,12 @@ for i = 1:length(uniqueLoads)
 
     % Computing Ky
     kyFromFit = D * B * C * (1 - E);
-    pkyNorm = kyFromFit / FZ0;
+    pkyNorm = (kyFromFit / (abs(thisLoad) * 9.8)) * (pi / 180);
 
     if ~exist('ky_fit_table', 'var')
         ky_fit_table = table(abs(thisLoad) * 9.8, B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
     else
-        table(abs(thisLoad) * 9.8, B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
+        ky_fit_table = [ky_fit_table; table(abs(thisLoad) * 9.8, B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'})];
     end
 
     % Turn on or off the original scatter plot
@@ -175,7 +175,7 @@ if exist('ky_fit_table', 'var')
     normKy = ky_fit_table.ky;
 
     pQuad = polyfit(loads, normKy, 2);
-    loadsFine = linspace(min(loads), max(loads) * 5, 5000);
+    loadsFine = linspace(min(loads), max(loads), 500);
     normKyFit = polyval(pQuad, loadsFine);
 
     [pKy1, idxPeak] = min(normKyFit);
@@ -200,6 +200,7 @@ if exist('ky_fit_table', 'var')
     legend('Measured', 'Quadratic Fit', 'Peak', 'Location', 'best');
 
 else
+
     warning('No Ky Data');
 
 end
