@@ -191,5 +191,6 @@ if exist('ky_fit_table', 'var')
     plot(loads, normKy, 'ko', 'MarkerFaceColor', 'k');
     hold on;
     plot(loadsFine, normKyFit, 'b-', 'LineWidth', 1.6);
-    plot(loadsAtPeak, )
+    plot(loadsAtPeak, pKY1, 'ro', 'MarkerSize', 8, 'LineWidth', 1.5);
+    
 end
