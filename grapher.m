@@ -1,7 +1,7 @@
 clc, clearvars, clear all
 inFile = "R20_sorted.csv";
 
-withOriginalPlot = false;
+withOriginalPlot = true;
 
 % Parameters
 slipAngleBinWidth = 0.5;
@@ -97,7 +97,7 @@ for i = 1:length(uniqueLoads)
     D = params(3);
     E = params(4);
 
-    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3f\n', abs(thisLoad), B, C, D, E);
+    fprintf('Load = %d N --> B = %.3f, C = %.3f, D = %.2f, E = %.3f\n', abs(thisLoad), B, C, D, E);
 
     alphaFine = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
