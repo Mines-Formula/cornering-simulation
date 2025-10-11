@@ -144,6 +144,9 @@ for i = 1:length(uniqueLoads)
     
 end
 
+disp('Summary of pacejka Fit Parameters');
+disp(fitResults);
+
 xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
 ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
 title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0.95]);
