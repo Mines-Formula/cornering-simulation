@@ -140,9 +140,9 @@ for i = 1:length(uniqueLoads)
     pkyNorm = kyFromFit / FZ0;
 
     if ~exist('ky_fit_table', 'var')
-        ky_fit_table = table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
+        ky_fit_table = table(abs(thisLoad) * 9.8, B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
     else
-        table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
+        table(abs(thisLoad) * 9.8, B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
     end
 
     % Turn on or off the original scatter plot
@@ -191,6 +191,15 @@ if exist('ky_fit_table', 'var')
     plot(loads, normKy, 'ko', 'MarkerFaceColor', 'k');
     hold on;
     plot(loadsFine, normKyFit, 'b-', 'LineWidth', 1.6);
-    plot(loadsAtPeak, pKY1, 'ro', 'MarkerSize', 8, 'LineWidth', 1.5);
-    
+    plot(loadAtPeak, pKy1, 'ro', 'MarkerSize', 8, 'LineWidth', 1.5);
+
+    xlabel('Vertical Load (N)');
+    ylabel('Normalized Stiffness (ky / FZ0');
+    title('Normalized Cornering Stiffness vs Load');
+    grid on;
+    legend('Measured', 'Quadratic Fit', 'Peak', 'Location', 'best');
+
+else
+    warning('No Ky Data');
+
 end

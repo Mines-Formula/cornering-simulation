@@ -140,7 +140,7 @@ for i = 1:length(uniqueLoads)
     pkyNorm = kyFromFit / FZ0;
 
     if ~exist('ky_fit_table', 'var')
-        kyFitTable = table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
+        ky_fit_table = table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
     else
         table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
     end
@@ -169,10 +169,10 @@ title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0
 legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
 
 if exist('ky_fit_table', 'var')
-    kyFitTable = sortrows(kyFitTable, 'LoadN');
+    ky_fit_table = sortrows(ky_fit_table, 'LoadN');
 
-    loads = kyFitTable.LoadN;
-    normKy = kyFitTable.ky;
+    loads = ky_fit_table.LoadN;
+    normKy = ky_fit_table.ky;
 
     pQuad = polyfit(loads, normKy, 2);
     loadsFine = linspace(min(loads), max(loads) * 5, 5000);
@@ -180,11 +180,23 @@ if exist('ky_fit_table', 'var')
 
     [pKy1, idxPeak] = min(normKyFit);
     loadAtPeak = loadsFine(idxPeak);
-    pKy2 = loadsAtPeak / FZ0;
+    pKy2 = loadAtPeak / FZ0;
 
     fprintf('\npKy results \n');
     fprintf('pKy1 = %.4f (most negative normalized stiffness)\n', pKy1);
     fprintf('pKy2 = %.4f (load at peak / FZ0)\n', pKy2);
-    fprintf('Load at peak = %1.f N')
+    fprintf('Load at peak = %1.f N\n\n', loadAtPeak);
+
+    figure('Color', [1 1 1]);
+    plot(loads, normKy, 'ko', 'MarkerFaceColor', 'k');
+    hold on;
+    plot(loadsFine, normKyFit, 'b-', 'LineWidth', 1.6);
+    plot(loadAtPeak, pKy1, 'ro', 'MarkerSize', 8, 'LineWidth', 1.5);
+
+    xlabel('Vertical Load (N)');
+    ylabel('Normalized Stiffness (ky / FZ0');
+    title('Normalized Cornering Stiffness vs Load');
+    grid on;
+    legend('Measured', 'Quadratic Fit', 'Pe');
 
 end
