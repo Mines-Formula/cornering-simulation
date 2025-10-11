@@ -145,17 +145,61 @@ for i = 1:length(uniqueLoads)
     % This is the new LOESS based plot
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d kg (LOESS)', abs(thisLoad)));
 
-    % calculate ky just like the book says
-    FyTarget = 5000;
+    % --- compute slope near origin (±2°) ---
+    originWindow = 2; % degrees, adjustable
+    nearZeroIdx = abs(binnedSlipAngle) <= originWindow;
+    
+    if sum(nearZeroIdx) >= 3
+        % linear fit to LOESS curve near origin
+        p_lin = polyfit(binnedSlipAngle(nearZeroIdx), loessForce(nearZeroIdx), 1);
+        ky_origin = p_lin(1) / (pi / 180); % convert from N/deg to N/rad
+    else
+        ky_origin = NaN;
+    end
+    
+    % normalized version
+    Fz0 = 1962;
+    pky_origin = ky_origin / Fz0;
+    
+    fprintf('Load = %.0f kg --> ky_origin=%.0f N/rad, pKy_origin=%.2f\n', abs(thisLoad), ky_origin, pky_origin);
+    
+    if ~exist('ky_origin_results', 'var')
+        ky_origin_results = table(abs(thisLoad), ky_origin, pky_origin);
+    else
+        ky_origin_results = [ky_origin_results; table(abs(thisLoad), ky_origin, pky_origin)];
+    end
 
+
+    % Compute D_y
+    [peakForce, peakIdx] = max(loessForce);
+    [valleyForce, valleyIdx] = min(loessForce);
+    Dy = (abs(peakForce) + abs(valleyForce)) / 2;
+
+    % Convert load to N
+    thisLoadN = abs(thisLoad) * 9.81;
+
+    % Compute pD_y
+    pDy = Dy / thisLoadN;
+
+    fprintf('Load = %.0f kg --> D_y = %.2f N,  pD_y = %.4f\n', abs(thisLoad), Dy, pDy);
+
+    if ~exist('Dy_results', 'var')
+        Dy_results = table(thisLoad, Dy, pDy);
+    else
+        Dy_results = [Dy_results; table(thisLoad, Dy, pDy)];
+    end
+
+    % Textbook-style cornering stiffness (k_y)
+    FyTarget = 5000;
     [~, idxClosest] = min(abs(loessForce - FyTarget));
     alphaAtFy = binnedSlipAngle(idxClosest);
-    kyBook = FyTarget / (alphaAtFy * pi / 180);
+    kyBook = FyTarget / (alphaAtFy * pi / 180); % N/rad
 
-    Fz0 = 1962; % defined in the book
+    % Textbook normalization
+    Fz0 = 1962; % N (reference load)
     pkyBook = kyBook / Fz0;
 
-    fprintf('Load = %d N --> alpha@Fy=%.2f°, k_y=%.0f N/rad, pK_y=%.1f\n', abs(thisLoad), alphaAtFy, kyBook, pkyBook);
+    fprintf('Load = %.0f kg --> alpha@Fy=%.2f°, k_y=%.0f N/rad, pK_y=%.1f\n', abs(thisLoad), alphaAtFy, kyBook, pkyBook);
 
     if ~exist('ky_results', 'var')
         ky_results = table(abs(thisLoad), alphaAtFy, kyBook, pkyBook);
@@ -165,6 +209,9 @@ for i = 1:length(uniqueLoads)
 
     
 end
+
+disp('Summary of origin style looks');
+disp(ky_origin_results);
 
 disp('Summary of textbook-style cornering stiffness:');
 disp(ky_results);
