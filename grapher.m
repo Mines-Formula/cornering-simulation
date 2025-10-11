@@ -104,7 +104,11 @@ for i = 1:length(uniqueLoads)
 
     plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d N (Pacejka Fit)', thisLoad));
 
-    
+    if ~exit('fitResults', 'var')
+        firResults = table(thisLoad, B, C, D, E);
+    else
+        fitResults = [fitResults; table(thisLoad, B, C, D, E)];
+    end
 
     % Compute D_y
     [peakForce, peakIdx] = max(loessForce);
