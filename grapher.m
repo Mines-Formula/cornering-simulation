@@ -135,6 +135,26 @@ for i = 1:length(uniqueLoads)
 
     plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d N (Pacejka Fit)', thisLoad));
 
+    alphaFineRad = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 2000) * pi/180;
+    FyFitFine = pacejkaFunction(params, alphaFineRad);
+    dFy_dAlpha = diff(FyFitFine) ./ diff(alphaFineRad);
+    alphaMid = 0.5 * (alphaFineRad(1:end - 1) + alphaFineRad(2:end));
+    [kyMax, maxIdx] = max(abs(dFy_dAlpha));
+    alphaAtMax = alphaMid(maxIdx) * 180/pi;
+
+    figure(2);
+    hold on;
+    grid on;
+    set(gcf, 'Color', [0 0 0]);
+
+    plot(alphaMid * 180/pi, dFy_dAlpha, 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (k_y_{max}=%.1f N/rad)', abs(thisLoad), kyMax));
+    plot(alphaAtMax, dFy_dAlpha(maxIdx), 'wo', 'MarkerFaceColor', brightColor, 'MarkerSize', 6, 'HandleVisibility', 'off');
+
+    xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
+    ylabel('dF_y/d\alpha (N/rad)', 'Color', [0.9 0.9 0.9]);
+    title('Cornering Stiffness vs Slip Angle', 'Color', [0.95 0.95 0.95]);
+    legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
+
     if ~exist('fitResults', 'var')
         fitResults = table(abs(thisLoad), B, C, D, E, kyLinear, kyMax);
     else
@@ -152,6 +172,7 @@ for i = 1:length(uniqueLoads)
     %plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d kg (ORIGINAL)', abs(thisLoad)));
 
     % This is the new LOESS based plot
+    figure(1)
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d kg (LOESS)', abs(thisLoad)));
     
 end
