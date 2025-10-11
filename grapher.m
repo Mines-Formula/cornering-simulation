@@ -85,6 +85,25 @@ for i = 1:length(uniqueLoads)
     window = round(numel(binnedCorneringForce) * loessFrac);
     loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
 
+    % Compute D_y
+    [peakForce, peakIdx] = max(loessForce);
+    [valleyForce, valleyIdx] = min(loessForce);
+
+    Dy = (abs(peakForce) + abs(valleyForce)) / 2;
+
+    % Compute pD_y
+    pDy = Dy / (abs(thisLoad) * 9.8);
+
+    fprintf('Load = %d N --> D_y = %.2f N,  pD_y = %.4f\n', abs(thisLoad), Dy, pDy);
+
+    if ~exist('Dy_results', 'var')
+        Dy_results = table(thisLoad, Dy, pDy);
+    else
+        Dy_results = [Dy_results; table(thisLoad, Dy, pDy)];
+    end
+
+
+    % pacejka function for best fit
     pacejkaFunction = @(params, alphs) params(3) .* sin(params(2) .* sin(params(2) .* atan(params(1) * alpha - params(4) * params(1) * alpha - atan(params(1) * alpha))));
 
     initialGuess = [10, 1.3, Dy, 0.97];
@@ -109,24 +128,6 @@ for i = 1:length(uniqueLoads)
     else
         fitResults = [fitResults; table(thisLoad, B, C, D, E)];
     end
-
-    % Compute D_y
-    [peakForce, peakIdx] = max(loessForce);
-    [valleyForce, valleyIdx] = min(loessForce);
-
-    Dy = (abs(peakForce) + abs(valleyForce)) / 2;
-
-    % Compute pD_y
-    pDy = Dy / (abs(thisLoad) * 9.8);
-
-    fprintf('Load = %d N --> D_y = %.2f N,  pD_y = %.4f\n', abs(thisLoad), Dy, pDy);
-
-    if ~exist('Dy_results', 'var')
-        Dy_results = table(thisLoad, Dy, pDy);
-    else
-        Dy_results = [Dy_results; table(thisLoad, Dy, pDy)];
-    end
-
 
     % Turn on or off the original scatter plot
     if withOriginalPlot
