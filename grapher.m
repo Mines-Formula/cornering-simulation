@@ -105,14 +105,14 @@ for i = 1:length(uniqueLoads)
 
 
     % pacejka function for best fit
-    pacejkaFunction = @(params, alpha) params(3) .* sin(params(2) .* sin(params(2) .* atan(params(1) * alpha - params(4) * params(1) * alpha - atan(params(1) * alpha))));
+    pacejkaFunction = @(params, alpha) params(3) .* sin(params(2) .* atan(params(1)*alpha - params(4)*(params(1)*alpha - atan(params(1)*alpha))));
 
     initialGuess = [10, 1.3, Dy, 0.97];
 
     opts = optimoptions('lsqcurvefit', 'Display', 'off');
     lb = [0, 0.5, 0.5 * Dy, 0];
     ub = [50, 2.0, 1.5 * Dy, 1];
-    params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, lb, ub, opts); 
+    params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, [], [], opts); 
 
     B = params(1);
     C = params(2);
