@@ -153,3 +153,6 @@ b_mu = X_mu \ fitResults.mu_y;
 P_DY1 = b_mu(1);
 P_DY2 = b_mu(2);
 P_DY3 = b_mu(3); % This one is useless without camber angle comparisons
+
+fprintf('Friction (µy) coefficients:\n');
+fprintf('  P_DY1 = %.6f\n  P_DY2 = %.6f\n  P_DY3 = %.6f\n\n', P_DY1, P_DY2, P_DY3);
