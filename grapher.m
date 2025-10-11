@@ -137,7 +137,7 @@ for i = 1:length(uniqueLoads)
 
     % Computing Ky
     kyFromFit = D * B * C * (1 - E);
-    pkyNorm = (kyFromFit / (abs(thisLoad) * 9.8)) * (pi / 180);
+    pkyNorm = kyFromFit / (abs(thisLoad) * 9.8);
 
     if ~exist('ky_fit_table', 'var')
         ky_fit_table = table(abs(thisLoad) * 9.8, B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
@@ -172,7 +172,7 @@ if exist('ky_fit_table', 'var')
     ky_fit_table = sortrows(ky_fit_table, 'LoadN');
 
     loads = ky_fit_table.LoadN;
-    normKy = ky_fit_table.ky;
+    normKy = ky_fit_table.pky;
 
     pQuad = polyfit(loads, normKy, 2);
     loadsFine = linspace(min(loads), max(loads), 500);
