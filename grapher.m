@@ -156,3 +156,20 @@ P_DY3 = b_mu(3); % This one is useless without camber angle comparisons
 
 fprintf('Friction (µy) coefficients:\n');
 fprintf('  P_DY1 = %.6f\n  P_DY2 = %.6f\n  P_DY3 = %.6f\n\n', P_DY1, P_DY2, P_DY3);
+
+% Ky/FZ0 = P_KY1 * sin( 2*atan( Fz / (P_KY2*FZ0) ) ) * (1 + P_KY3*gamma)
+yK = fitResults.ky ./ FZ0;
+Fz = fitResults.Fz;
+gamme = fitResults.gamma;
+
+pacejkaKyFunction = @(p, F) p(1) .* sin( 2*atan( F ./ (p(2)*FZ0) ) ) .* (1 + p(3) * gamma);
+
+p0 = [max(yK), 1.0, 0.0];
+opts = optimoptions('lsqcurvefit','Display','off');
+p_KY = lsqcurvefit(@(p,F) pace(p,F), p0, Fz, yK, [], [], opts);
+
+P_KY1 = p_KY(1);
+P_KY2 = p_KY(2);
+P_KY3 = p_KY(3);
+fprintf('Cornering stiffness coefficients:\n');
+fprintf('  P_KY1 = %.6f\n  P_KY2 = %.6f\n  P_KY3 = %.6f\n\n', P_KY1, P_KY2, P_KY3);
