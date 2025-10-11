@@ -99,17 +99,55 @@ for i = 1:length(uniqueLoads)
 
     ky = B * C * D;
 
+
+    % Find camber 4 degrees
+    Fz0 = abs(thisLoad) * 9.8;
+    Dy0 = D;
+    camberDegrees = 4;
+    camberRadians = deg2rad(camberDegrees);
+
+    DyCamber = D * 0.9;
+
+    if Fz0 == 0
+        pDy1 = NaN;
+    else
+        pDy1 = Dy0 / Fz0;
+    end
+
+    ratio = DyCamber ./ Dy0;
+    diffTerm = max(0, 1 - ratio);
+
+    if camberDegrees ~= 0
+        pDy3Degrees = sqrt(diffTerm) / camberDegrees;
+    else
+        pDy3Degrees = NaN;
+    end
+
+    if camberRadians ~= 0
+        pDy3Radians = sqrt(diffTerm) / camberRadians;
+    else
+        pDy3Radians = NaN;
+    end
+
+
+
     fprintf('Load = %d kg --> B = %.3f, C = %.3f, D = %.2f, E = %.3f, ky = %.3f\n', abs(thisLoad), B, C, D, E, ky);
+    fprintf('    Dy0 = %.3f, Dy(%.0f degrees) = %.3f, FZ0 = %.3f\n', Dy0, camberDegrees, DyCamber, Fz0);
+    fprintf('    pDy1 = %.6g, pDy3 (deg) = %.6g (per deg), pDy3 (rad) = %.6g (per rad)', pDy1, pDy3Degrees, pDy3Radians);
 
     alphaFine = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
+    paramsCamber = [B, C, DyCamber, E];
+    FyFitCamber = pacejkaFunction(paramsCamber, alphaFine * pi / 180);
+
 
     plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d kg (Pacejka Fit)', thisLoad));
+    plot(alphaFine, FyFitCamber, '-', 'Color', brightColor * 0.8, 'LineWidth', 2, 'DisplayName', sprintf('%d kg, %0.f degrees Camber', thisLoad, camberDegrees));
 
     if ~exist('fitResults', 'var')
-        fitResults = table(abs(thisLoad), B, C, D, E, ky);
+        fitResults = table(abs(thisLoad), B, C, D, E, ky, pDy1, pDy3Degrees, pDy3Radians);
     else
-        fitResults = [fitResults; table(abs(thisLoad), B, C, D, E, ky)];
+        fitResults = [fitResults; table(abs(thisLoad), B, C, D, E, ky, pDy1, pDy3Degrees, pDy3Radians)];
     end
 
    
