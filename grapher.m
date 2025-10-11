@@ -133,3 +133,23 @@ xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
 ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
 title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0.95]);
 legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
+
+fitResults.Fz = fitResults.Var1 * 9.8;
+fitResults.gamma = zeros(height(fitResults), 1); % Took this out because
+% we don't HAVE ANY!!!
+
+fitResults.mu_y = fitResults.D ./ (fitResults.Fz);
+fitResults.ky_norm = fitResults.ky ./ max(fitResults.Fz);
+
+FZ0 = median(fitResults.Fz); % We can change this to exactly match the books value
+
+fprintf('Nominal load FZ0 = %.1f N\n\n', FZ0);
+
+% µy(Fz) = P_DY1 + P_DY2*(Fz/FZ0 - 1) + P_DY3*gamma^2.  Type it into Google
+% and some good results come up
+X_mu = [ones(height(fitResults),1), (fitResults.Fz./FZ0 - 1), (fitResults.gamma).^2];
+b_mu = X_mu \ fitResults.mu_y;
+
+P_DY1 = b_mu(1);
+P_DY2 = b_mu(2);
+P_DY3 = b_mu(3); % This one is useless without camber angle comparisons
