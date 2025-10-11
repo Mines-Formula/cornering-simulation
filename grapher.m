@@ -14,6 +14,9 @@ cutoff = 0.05;
 % loess parameters
 loessFrac = 0.2; % This is alpha
 
+% Reference Vertical load from book
+FZ0 = 200 * 9.8;
+
 % import data
 newTable = readtable(inFile);
 slipAngleRaw = newTable.SlipAngle;
@@ -132,6 +135,16 @@ for i = 1:length(uniqueLoads)
         fitResults = [fitResults; table(abs(thisLoad), B, C, D, E)];
     end
 
+    % Computing Ky
+    kyFromFit = D * B * C * (1 - E);
+    pkyNorm = kyFromFit / FZ0;
+
+    if ~exist('ky_fit_table', 'var')
+        kyFitTable = table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
+    else
+        table(abs(thisLoad), B, C, D, E, kyFromFit, pkyNorm, 'VariableNames', {'LoadN', 'B', 'C', 'D', 'E', 'ky', 'pky'});
+    end
+
     % Turn on or off the original scatter plot
     if withOriginalPlot
 
@@ -154,3 +167,13 @@ xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
 ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
 title('Cornering Force vs Slip Angle - Original vs LOESS', 'Color', [0.95 0.95 0.95]);
 legend('TextColor', 'w', 'Location', 'best', 'FontSize', 9);
+
+if exist('ky_fit_table', 'var')
+    kyFitTable = sortrows(kyFitTable, 'LoadN');
+
+    loads = kyFitTable.LoadN;
+    normKy = kyFitTable.ky;
+
+    pQuad = polyfit(loads, normKy, 2);
+    loadsFine = linspace(min(loads), max(loads) * 5, 5000);
+end
