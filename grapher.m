@@ -97,7 +97,9 @@ for i = 1:length(uniqueLoads)
     D = params(3);
     E = params(4);
 
-    fprintf('Load = %d kg --> B = %.3f, C = %.3f, D = %.2f, E = %.3f\n', abs(thisLoad), B, C, D, E);
+    ky = B * C * D;
+
+    fprintf('Load = %d kg --> B = %.3f, C = %.3f, D = %.2f, E = %.3f, ky = %.3f\n', abs(thisLoad), B, C, D, E, ky);
 
     alphaFine = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
@@ -105,10 +107,12 @@ for i = 1:length(uniqueLoads)
     plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d kg (Pacejka Fit)', thisLoad));
 
     if ~exist('fitResults', 'var')
-        fitResults = table(abs(thisLoad), B, C, D, E);
+        fitResults = table(abs(thisLoad), B, C, D, E, ky);
     else
-        fitResults = [fitResults; table(abs(thisLoad), B, C, D, E)];
+        fitResults = [fitResults; table(abs(thisLoad), B, C, D, E, ky)];
     end
+
+   
 
     % Turn on or off the original scatter plot
     if withOriginalPlot
