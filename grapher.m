@@ -185,5 +185,8 @@ if exist('ky_fit_table', 'var')
     fprintf('\npKy results \n');
     fprintf('pKy1 = %.4f (most negative normalized stiffness)\n', pKy1);
     fprintf('pKy2 = %.4f (load at peak / FZ0)\n', pKy2);
+    fprintf('Load at peak = %1.f N\n\n', loadAtPeak);
+
+    
 
 end

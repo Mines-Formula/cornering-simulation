@@ -179,5 +179,12 @@ if exist('ky_fit_table', 'var')
     normKyFit = polyval(pQuad, loadsFine);
 
     [pKy1, idxPeak] = min(normKyFit);
-    loadAtPeak = 
+    loadAtPeak = loadsFine(idxPeak);
+    pKy2 = loadsAtPeak / FZ0;
+
+    fprintf('\npKy results \n');
+    fprintf('pKy1 = %.4f (most negative normalized stiffness)\n', pKy1);
+    fprintf('pKy2 = %.4f (load at peak / FZ0)\n', pKy2);
+    fprintf('Load at peak = %1.f N')
+
 end
