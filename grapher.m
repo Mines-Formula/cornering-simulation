@@ -90,14 +90,17 @@ for i = 1:length(uniqueLoads)
     [valleyForce, valleyIdx] = min(loessForce);
 
     Dy = (abs(peakForce) + abs(valleyForce)) / 2;
-    fprintf('Load = %d N --> D_y = %.2f N\n', thisLoad, Dy);
+
+    % Compute pD_y
+    pDy = Dy / (abs(thisLoad) * 9.8);
+
+    fprintf('Load = %d N --> D_y = %.2f N,  pD_y = %.4f\n', abs(thisLoad), Dy, pDy);
 
     if ~exist('Dy_results', 'var')
-        Dy_results = table(thisLoad, Dy);
+        Dy_results = table(thisLoad, Dy, pDy);
     else
-        Dy_results = [Dy_results; table(thisLoad, Dy)];
+        Dy_results = [Dy_results; table(thisLoad, Dy, pDy)];
     end
-
 
 
     % Turn on or off the original scatter plot
@@ -108,16 +111,13 @@ for i = 1:length(uniqueLoads)
     end
 
     % This is the previous plot just for comparison
-    plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d N (ORIGINAL)', thisLoad));
+    plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d kg (ORIGINAL)', abs(thisLoad)));
 
     % This is the new LOESS based plot
     brightColor = min(colors(i,:) * 1.5, 1.0);
-    plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d N (LOESS)', thisLoad));
+    plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d kg (LOESS)', abs(thisLoad)));
     
 end
-
-disp('Summary of D_y values:');
-disp(Dy_results);
 
 xlabel('Slip Angle (deg)', 'Color', [0.9 0.9 0.9]);
 ylabel('Cornering Force (N)', 'Color', [0.9 0.9 0.9]);
