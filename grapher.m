@@ -7,10 +7,6 @@ withOriginalPlot = true;
 slipAngleBinWidth = 0.5;
 minPointsPerLoad = 30;
 
-% Butterworth Parameters
-order = 2;
-cutoff = 0.05;
-
 % loess parameters
 loessFrac = 0.2; % This is alpha
 
@@ -78,31 +74,15 @@ for i = 1:length(uniqueLoads)
     [binnedSlipAngle, sidx] = sort(binnedSlipAngle);
     binnedCorneringForce = binnedCorneringForce(sidx);
 
-    % The butterworth part
-    [b, a] = butter(order, cutoff, 'low');
-    corneringForceSmooth = filtfilt(b, a, binnedCorneringForce);
-
     % LOESS
     window = round(numel(binnedCorneringForce) * loessFrac);
     loessForce = smoothdata(binnedCorneringForce, 'rloess', window);
 
-    % Compute D_y
+        % Compute D_y
     [peakForce, peakIdx] = max(loessForce);
     [valleyForce, valleyIdx] = min(loessForce);
 
     Dy = (abs(peakForce) + abs(valleyForce)) / 2;
-
-    % Compute pD_y
-    pDy = Dy / (abs(thisLoad) * 9.8);
-
-    fprintf('Load = %d N --> D_y = %.2f N,  pD_y = %.4f\n', abs(thisLoad), Dy, pDy);
-
-    if ~exist('Dy_results', 'var')
-        Dy_results = table(thisLoad, Dy, pDy);
-    else
-        Dy_results = [Dy_results; table(thisLoad, Dy, pDy)];
-    end
-
 
     % pacejka function for best fit
     pacejkaFunction = @(params, alpha) params(3) .* sin(params(2) .* atan(params(1)*alpha - params(4)*(params(1)*alpha - atan(params(1)*alpha))));
@@ -110,8 +90,6 @@ for i = 1:length(uniqueLoads)
     initialGuess = [10, 1.3, Dy, 0.97];
 
     opts = optimoptions('lsqcurvefit', 'Display', 'off');
-    lb = [0, 0.5, 0.5 * Dy, 0];
-    ub = [50, 2.0, 1.5 * Dy, 1];
     params = lsqcurvefit(pacejkaFunction, initialGuess, binnedSlipAngle * pi / 180, loessForce, [], [], opts); 
 
     B = params(1);
@@ -138,9 +116,6 @@ for i = 1:length(uniqueLoads)
         scatter(curSlipAngle, curCorneringForce, 1, 'MarkerFaceColor', colors(i,:), 'MarkerEdgeColor', 'none', 'MarkerFaceAlpha', 0.05);
 
     end
-
-    % This is the previous plot just for comparison
-    %plot(binnedSlipAngle, corneringForceSmooth, '-', 'LineWidth', 2, 'Color', colors(i,:), 'DisplayName', sprintf('%d kg (ORIGINAL)', abs(thisLoad)));
 
     % This is the new LOESS based plot
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d kg (LOESS)', abs(thisLoad)));
