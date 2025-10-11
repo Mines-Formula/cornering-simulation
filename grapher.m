@@ -119,7 +119,16 @@ for i = 1:length(uniqueLoads)
     D = params(3);
     E = params(4);
 
-    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3f\n', abs(thisLoad), B, C, D, E);
+    % start finding ky
+    kyLinear = B * C * D;
+
+    alphaFineRad = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 2000) * pi/180;
+    FyFitFine = pacejkaFunction(params, alphaFineRad);
+    dFy_dAlpha = diff(FyFitFine) ./ diff(alphaFineRad);
+    kyMax = max(abs(dFy_dAlpha));
+
+
+    fprintf('Load = %d N --> B=%.3f, C=%.3f, D=%.2f, E=%.3f k_y(0)=%.2f N/rad, k_y(max)=%.2f N/rad\n', abs(thisLoad), B, C, D, E, kyLinear, kyMax);
 
     alphaFine = linspace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
