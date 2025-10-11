@@ -144,8 +144,30 @@ for i = 1:length(uniqueLoads)
 
     % This is the new LOESS based plot
     plot(binnedSlipAngle, loessForce, '--', 'Color', brightColor, 'LineWidth', 2, 'DisplayName', sprintf('%d kg (LOESS)', abs(thisLoad)));
+
+    % calculate ky just like the book says
+    FyTarget = 5000;
+
+    [~, idxClosest] = min(abs(loessForce - FyTarget));
+    alphaAtFy = binnedSlipAngle(idxClosest);
+    kyBook = FyTarget / (alphaAtFy * pi / 180);
+
+    Fz0 = 1962; % defined in the book
+    pkyBook = kyBook / 1980;
+
+    fprintf('Load = %d N --> alpha@Fy=%.2f°, k_y=%.0f N/rad, pK_y=%.1f\n', abs(thisLoad), alphaAtFy, kyBook, pkyBook);
+
+    if ~exist('ky_results', 'var')
+        ky_results = table(abs(thisLoad), alphaAtFy, kyBook, pkyBook);
+    else
+        ky_results = [ky_results; table(abs(thisLoad), alphaAtFy, kyBook, pkyBook)];
+    end
+
     
 end
+
+disp('Summary of textbook-style cornering stiffness:');
+disp(ky_results);
 
 disp('Summary of pacejka Fit Parameters');
 disp(fitResults);
