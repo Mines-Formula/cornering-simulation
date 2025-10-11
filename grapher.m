@@ -102,7 +102,9 @@ for i = 1:length(uniqueLoads)
     alphaFine = linespace(min(binnedSlipAngle), max(binnedSlipAngle), 200);
     FyFit = pacejkaFunction(params, alphaFine * pi / 180);
 
-    plot(alphaFin, )
+    plot(alphaFine, FyFit, '-', 'Color', brightColor, 'LineWidth', 2.5, 'DisplayName', sprintf('%d N (Pacejka Fit)', thisLoad));
+
+    
 
     % Compute D_y
     [peakForce, peakIdx] = max(loessForce);
