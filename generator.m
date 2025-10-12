@@ -5,7 +5,7 @@ fileList = dir(fullfile(dataFolder, "*.mat"));
 
 finalTable = table();
 
-targetTire = 'Hoosier 43070 16x6.0-10 R20, 6 inch rim'
+targetTire = 'Hoosier 43070 16x6.0-10 R20, 6 inch rim' % Change to 7 inch rim
 
 for i = 1:numel(fileList)
 
